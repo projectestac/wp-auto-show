@@ -1,6 +1,21 @@
+## WordPress random posts and pages
+
+This project displays a "carousel" of posts and pages of any WordPress site inside an `iframe` element, automatically passing to another page or post after a specified time lapse. It is intended to be used in kiosk mode, where the content of a site is to be shown to the public.
+
+The selection of pages and posts included on the show can be manually done, based on categories or on a specific interval of time. 
+
+---
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
+rdPress random posts and pages
+
+This project displays a "carousel" of posts and pages of any WordPress site inside an `iframe` element, automatically passing to another page or post after a specified time lapse. It is intended to be used in kiosk mode, where the content of a site is to be shown to the public.
+
+The selection of pages and posts included on the show can be manually done, based on categories or on a specific interval of time.
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 In the project directory, you can run:
 
