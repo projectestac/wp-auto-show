@@ -25,7 +25,7 @@ function Pages(props) {
 
   return (
     <div>
-      <h2>Pàgines</h2>
+      <h3>Pàgines</h3>
       <FormControlLabel
         control={
           <Checkbox
@@ -35,7 +35,7 @@ function Pages(props) {
         }
         label="Selecciona totes les pàgines"
       />
-      <List component="nav">
+      <List className="pagesList" component="nav">
         {conf.pages.map((page, i) => (page.type === 'page' && page.status === 'publish' &&
           <ListItem
             key={i}

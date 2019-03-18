@@ -33,10 +33,17 @@
 }
 
 .main {
-  margin: 1rem auto;
   max-width: 800px;
   text-align: left;
-  padding: 1rem;
+  padding: 1rem;  
+  margin: 1rem;
+}
+
+@media(min-width: 800px) {
+  .main{
+    margin: 1rem auto;
+    max-width: 800px;
+  }
 }
 
 .sitePrompt {
@@ -58,5 +65,27 @@
 .date {
   width: 10rem;
   margin-right: 3rem !important;
-  margin-bottom: 1rem !important;
+}
+
+.catList, .postList, .pagesList {
+  max-height: 300px;
+  overflow: auto;
+  border: 1px solid gray;
+  cursor: pointer;
+}
+
+h3 {
+  margin-top: 3rem;
+}
+
+.leftIcon {
+  margin-left: 1rem;
+}
+
+.playBtn {
+  margin: 1rem !important;
+}
+
+iframe {
+  height: 100vh;
 }

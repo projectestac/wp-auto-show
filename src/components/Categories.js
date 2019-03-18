@@ -29,7 +29,7 @@ function Categories(props) {
 
   return (
     <div>
-      <h2>Categories</h2>
+      <h3>Categories</h3>
       <FormControlLabel
         control={
           <Checkbox
@@ -48,7 +48,7 @@ function Categories(props) {
         }
         label="Mostra també les pàgines de categoria"
       />
-      <List component="nav">
+      <List className="catList" component="nav">
         {conf.categories.map((cat, i) => (
           <ListItem
             key={i}

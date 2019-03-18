@@ -2,7 +2,7 @@ import React from 'react'
 
 function PageViewer(props) {
 
-  const { url, title = "Current page", width = "100%", height = "9999", allowFullScreen = true } = props;
+  const { url, title = "Current page", width = "100%", height = "100%", allowFullScreen = true } = props;
 
   return (
     <iframe

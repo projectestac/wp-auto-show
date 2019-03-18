@@ -25,7 +25,7 @@ function Posts(props) {
 
   return (
     <div>
-      <h2>Articles</h2>
+      <h3>Articles</h3>
       <FormControlLabel
         control={
           <Checkbox
@@ -35,7 +35,7 @@ function Posts(props) {
         }
         label="Selecciona tots els articles"
       />
-      <List component="nav">
+      <List component="nav" className="postList">
         {conf.posts.map((post, i) => (post.type === 'post' && post.status === 'publish' &&
           <ListItem
             key={i}

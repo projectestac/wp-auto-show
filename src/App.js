@@ -4,6 +4,7 @@ import fetchJsonp from 'fetch-jsonp';
 import PageCarousel from './components/PageCarousel';
 import Settings from './components/Settings';
 import Button from '@material-ui/core/Button';
+import PlayArrow from '@material-ui/icons/PlayArrow'
 
 function App() {
 
@@ -136,12 +137,14 @@ function App() {
     <div className="App">
       {!playing && <Settings {...{ conf, setConf, checkSite, selectPostsByDateAndCategory }} />}
       {!playing && conf.categories &&
-        <Button
+        <Button className="playBtn"
           variant="contained"
+          color="primary"
           onClick={play}
           disabled={countUrls() === 0}
         >
           Inicia la visualització
+        <PlayArrow className="leftIcon"/>
         </Button>
       }
       {playing && <PageCarousel urls={getUrls()} interval={conf.interval} />}
