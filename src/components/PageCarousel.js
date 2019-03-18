@@ -1,28 +1,17 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import PageViewer from './PageViewer';
 
-class PageCarousel extends Component {
+function PageCarousel(props) {
 
-  state = {
-    currentPage: 0,
-  }
+  const [currentPage, setCurrentPage] = useState(0);
+  const { urls, interval } = props;
 
-  constructor(props) {
-    super(props);
+  // TODO: Avoid re-entrant intervals!
+  window.setInterval(() => {
+    setCurrentPage(currentPage + 1 % urls.length);
+  }, interval);
 
-    const { urls = [''], timeLapse = 5000 } = props;
-
-    window.setInterval(() => {
-      this.setState({ currentPage: (this.state.currentPage + 1) % urls.length })
-    }, timeLapse);
-
-  }
-
-  render() {
-    const { urls } = this.props;
-    const { currentPage } = this.state;
-    return <PageViewer url={urls[currentPage]} />
-  }
+  return <PageViewer url={urls[currentPage]} />
 }
 
 export default PageCarousel;

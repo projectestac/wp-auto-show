@@ -6,10 +6,12 @@ import Button from '@material-ui/core/Button';
 import Waiting from './Waiting';
 import Categories from './Categories';
 import Posts from './Posts';
+import Pages from './Pages';
+import Dates from './Dates';
 
 function Settings(props) {
 
-  const { conf, setConf, checkSite } = props;
+  const { conf, setConf, checkSite, selectPostsByDateAndCategory } = props;
 
   const handleChange = ev => setConf({ ...conf, [ev.target.id]: ev.target.value })
 
@@ -32,21 +34,10 @@ function Settings(props) {
       </Button>
       {conf.loading && <Waiting />}
       {conf.err && <p>ERROR: {conf.err}</p>}
-      {conf.categories && <Categories {...{ conf, setConf }} />}
+      {conf.posts && <Dates {...{ conf, setConf, selectPostsByDateAndCategory }} />}
+      {conf.categories && <Categories {...{ conf, setConf, selectPostsByDateAndCategory }} />}
       {conf.posts && <Posts {...{ conf, setConf }} />}
-      {conf.pages && (
-        <div>
-          <h2>Pages</h2>
-          <ul>
-            {conf.pages.map((page, i) => (page.type === 'page' && page.status === 'publish' &&
-              <li key={i}>
-                <a href={page.link}>
-                  <span dangerouslySetInnerHTML={{ __html: page.title.rendered }} />
-                </a>
-              </li>))}
-          </ul>
-        </div>
-      )}
+      {conf.pages && <Pages {...{ conf, setConf }} />}
     </Paper>
   );
 

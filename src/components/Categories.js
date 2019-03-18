@@ -7,20 +7,24 @@ import Checkbox from '@material-ui/core/Checkbox';
 
 function Categories(props) {
 
-  const { conf, setConf } = props;
+  const { conf, setConf, selectPostsByDateAndCategory } = props;
   const [allCategories, setAllCategories] = React.useState(true);
 
   const handleListClick = category => () => {
     category.selected = !category.selected;
     if (!category.selected)
       setAllCategories(false);
-    setConf({ ...conf });
+    selectPostsByDateAndCategory();
   }
 
   const checkAllCategories = () => {
     conf.categories.forEach(cat => { cat.selected = !allCategories });
-    setConf({ ...conf });
+    selectPostsByDateAndCategory();
     setAllCategories(!allCategories);
+  }
+
+  const checkIncludeCategoryPages = () => {
+    setConf({ ...conf, includeCategoryPages: !conf.includeCategoryPages });
   }
 
   return (
@@ -34,6 +38,15 @@ function Categories(props) {
           />
         }
         label="Selecciona totes les categories"
+      />
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={conf.includeCategoryPages}
+            onChange={checkIncludeCategoryPages}
+          />
+        }
+        label="Mostra també les pàgines de categoria"
       />
       <List component="nav">
         {conf.categories.map((cat, i) => (

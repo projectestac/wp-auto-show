@@ -15,7 +15,7 @@ function Posts(props) {
     if (!post.selected)
       setAllPosts(false);
     setConf({ ...conf });
-  }
+  };
 
   const checkAllPosts = () => {
     conf.posts.forEach(post => { post.selected = !allPosts });
@@ -33,7 +33,7 @@ function Posts(props) {
             onChange={checkAllPosts}
           />
         }
-        label="Selecciona totes els articles"
+        label="Selecciona tots els articles"
       />
       <List component="nav">
         {conf.posts.map((post, i) => (post.type === 'post' && post.status === 'publish' &&
