@@ -17,23 +17,25 @@ function Settings(props) {
 
   return (
     <Paper className="main">
-      <TextField
-        id="wpSite"
-        label="WordPress site URL"
-        value={conf.wpSite}
-        onChange={handleChange}
-        margin="normal"
-      />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={checkSite}
-        disabled={!validator.isURL(conf.wpSite)}
-      >
-        Connecta
+      <div className="sitePrompt">
+        <TextField
+          id="wpSite"
+          label="URL del lloc web WordPress (bloc, Nodes...)"
+          value={conf.wpSite}
+          onChange={handleChange}
+          margin="normal"
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={checkSite}
+          disabled={!validator.isURL(conf.wpSite)}
+        >
+          Connecta
       </Button>
+      </div>
       {conf.loading && <Waiting />}
-      {conf.err && <p>ERROR: {conf.err}</p>}
+      {conf.err && <p className="error">ERROR: {conf.err}</p>}
       {conf.posts && <Dates {...{ conf, setConf, selectPostsByDateAndCategory }} />}
       {conf.categories && <Categories {...{ conf, setConf, selectPostsByDateAndCategory }} />}
       {conf.posts && <Posts {...{ conf, setConf }} />}

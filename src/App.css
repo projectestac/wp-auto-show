@@ -31,3 +31,32 @@
     transform: rotate(360deg);
   }
 }
+
+.main {
+  margin: 1rem auto;
+  max-width: 800px;
+  text-align: left;
+  padding: 1rem;
+}
+
+.sitePrompt {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: 1fr 100px;
+  align-items: center;  
+}
+
+.waiting {
+  text-align: center;
+}
+
+.error {
+  font-weight: bold;
+  color: crimson;
+}
+
+.date {
+  width: 10rem;
+  margin-right: 3rem !important;
+  margin-bottom: 1rem !important;
+}

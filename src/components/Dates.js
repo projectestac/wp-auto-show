@@ -20,8 +20,9 @@ function Dates(props) {
   return (
     <MuiPickersUtilsProvider utils={DateMomentUtils} locale="ca">
       <div>
-        <h2>Interval de dates per als articles</h2>
+        <h3>Interval de dates per als articles</h3>
         <DatePicker
+          className="date"
           keyboard
           label="Data inicial"
           format="DD/MM/YYYY"
@@ -30,6 +31,7 @@ function Dates(props) {
           onChange={handleDateChange('from')}
         />
         <DatePicker
+          className="date"
           keyboard
           label="Data final"
           format="DD/MM/YYYY"
