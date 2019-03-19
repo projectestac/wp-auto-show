@@ -8,6 +8,7 @@ import Categories from './Categories';
 import Posts from './Posts';
 import Pages from './Pages';
 import Dates from './Dates';
+import CarouselOptions from './CarouselOptions';
 
 function Settings(props) {
 
@@ -32,7 +33,7 @@ function Settings(props) {
           disabled={!validator.isURL(conf.wpSite)}
         >
           Connecta
-      </Button>
+        </Button>
       </div>
       {conf.loading && <Waiting />}
       {conf.err && <p className="error">ERROR: {conf.err}</p>}
@@ -40,6 +41,7 @@ function Settings(props) {
       {conf.categories && <Categories {...{ conf, setConf, selectPostsByDateAndCategory }} />}
       {conf.posts && <Posts {...{ conf, setConf }} />}
       {conf.pages && <Pages {...{ conf, setConf }} />}
+      {conf.categories && <CarouselOptions {...{ conf, setConf }} />}
     </Paper>
   );
 

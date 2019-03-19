@@ -5,12 +5,13 @@ import PageCarousel from './components/PageCarousel';
 import Settings from './components/Settings';
 import Button from '@material-ui/core/Button';
 import PlayArrow from '@material-ui/icons/PlayArrow'
+import Header from './components/Header';
 
 function App() {
 
   const [conf, setConf] = useState({
     wpSite: localStorage.getItem('wpSite') || '',
-    interval: 5000,
+    interval: 10,
     ready: false,
     err: null,
     loading: false,
@@ -20,6 +21,7 @@ function App() {
     dateFrom: new Date('01/01/2013'),
     dateTo: new Date(),
     includeCategoryPages: true,
+    randomOrder: true,
   });
 
   const [playing, setPlaying] = useState(false);
@@ -38,19 +40,27 @@ function App() {
 
     setConf({ ...conf, wpSite: base, err: null, loading: true, categories: null, pages: null, posts: null });
 
-    const categories = [], posts = [], pages = [];
+    let categories = [], posts = [], pages = [];
     Promise.all([
-      apiQuery(base, 'categories', ['id', 'link', 'name'], categories),
+      apiQuery(base, 'categories', ['id', 'link', 'name', 'count'], categories),
       apiQuery(base, 'pages', ['id', 'link', 'modified', 'type', 'status', 'title'], pages),
       apiQuery(base, 'posts', ['id', 'link', 'modified', 'type', 'status', 'title', 'categories'], posts),
     ])
       .then(() => {
         console.log(`Data received: ${pages.length} pages and ${categories.length} categories`)
         localStorage.setItem('wpSite', base);
+        categories = categories.filter(cat => cat.count > 0).sort((a, b) => a.name < b.name ? -1 : 1);
         // Set all elements selected
         [categories, pages, posts].forEach(set => set.forEach(el => el.selected = true));
         // Convert 'modified' string to Date object
-        [pages, posts].forEach(set => set.forEach(el => el.modified = new Date(el.modified)));
+        [pages, posts].forEach(set => {
+          set.forEach(el => el.modified = new Date(el.modified));
+          set.sort((a, b) => {
+            return a.modified > b.modified ? -1
+              : a.modified < b.modified ? 1
+                : a.title < b.title ? -1 : 1;
+          });
+        });
         setConf({ ...conf, loading: false, categories, pages, posts });
       })
       .catch(err => {
@@ -98,11 +108,12 @@ function App() {
 
   const getUrls = () => {
     const urls = [];
-    urls.push(...conf.pages.filter(page => page.selected).map(page => page.link));
     urls.push(...conf.posts.filter(post => post.selected).map(post => post.link));
+    urls.push(...conf.pages.filter(page => page.selected).map(page => page.link));
     if (conf.includeCategoryPages)
       urls.push(...conf.categories.filter(cat => cat.selected).map(cat => cat.link));
-    return shuffle(urls);
+
+    return conf.randomOrder ? shuffle(urls) : urls;
   }
 
   const countUrls = () => {
@@ -135,7 +146,12 @@ function App() {
 
   return (
     <div className="App">
-      {!playing && <Settings {...{ conf, setConf, checkSite, selectPostsByDateAndCategory }} />}
+      {!playing &&
+        <div>
+          <Header />
+          <Settings {...{ conf, setConf, checkSite, selectPostsByDateAndCategory }} />
+        </div>
+      }
       {!playing && conf.categories &&
         <Button className="playBtn"
           variant="contained"
@@ -144,10 +160,12 @@ function App() {
           disabled={countUrls() === 0}
         >
           Inicia la visualització
-        <PlayArrow className="leftIcon"/>
+          <PlayArrow className="leftIcon" />
         </Button>
       }
-      {playing && <PageCarousel urls={getUrls()} interval={conf.interval} />}
+      {playing &&
+        <PageCarousel urls={getUrls()} interval={conf.interval} />
+      }
     </div>
   );
 }

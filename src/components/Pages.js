@@ -42,9 +42,10 @@ function Pages(props) {
             selected={page.selected}
             onClick={handleListClick(page)}
           >
-            <ListItemText>
-              <span dangerouslySetInnerHTML={{ __html: page.title.rendered }} />
-            </ListItemText>
+            <ListItemText
+              primary={<span dangerouslySetInnerHTML={{ __html: page.title.rendered }} />}
+              secondary={page.modified.toLocaleString()}
+            />
           </ListItem>
         ))}
       </List>

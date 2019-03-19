@@ -42,9 +42,10 @@ function Posts(props) {
             selected={post.selected}
             onClick={handleListClick(post)}
           >
-            <ListItemText>
-              <span dangerouslySetInnerHTML={{ __html: post.title.rendered }} />
-            </ListItemText>
+            <ListItemText
+              primary={<span dangerouslySetInnerHTML={{ __html: post.title.rendered }} />}
+              secondary={post.modified.toLocaleString()}
+            />
           </ListItem>
         ))}
       </List>
