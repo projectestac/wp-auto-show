@@ -7,8 +7,12 @@ import Button from '@material-ui/core/Button';
 import PlayArrow from '@material-ui/icons/PlayArrow'
 import Header from './components/Header';
 
+/**
+ * Main stateles component 
+ */
 function App() {
 
+  // Hook with miscellaneous state variables
   const [conf, setConf] = useState({
     wpSite: localStorage.getItem('wpSite') || '',
     interval: 10,
@@ -18,28 +22,44 @@ function App() {
     categories: null,
     pages: null,
     posts: null,
-    dateFrom: new Date('01/01/2013'),
+    dateFrom: new Date(),
     dateTo: new Date(),
     includeCategoryPages: true,
     randomOrder: true,
+    numUrls: 0,
   });
 
+  // Specific hook for 'playing'
   const [playing, setPlaying] = useState(false);
 
+  // Always check if fetch responses have the 'ok' attribute 
   const handleFetchErrors = (response) => {
     if (!response.ok)
       throw Error(response.statusText || 'Error desconegut');
     return response;
   }
 
+  // Obtain information from the WordPress site fetching multiple API services
   const checkSite = () => {
+
     // Remove trailing slashes, if any
     let base = conf.wpSite;
     while (base.endsWith('/'))
       base = base.substr(0, base.length - 1);
 
-    setConf({ ...conf, wpSite: base, err: null, loading: true, categories: null, pages: null, posts: null });
+    // Set the `loading` flag and reset conf to default values
+    setConf({
+      ...conf,
+      wpSite: base,
+      err: null,
+      loading: true,
+      categories: null,
+      pages: null,
+      posts: null,
+      numUrls: 0,
+    });
 
+    // Initialize main arrays and launch API queries
     let categories = [], posts = [], pages = [];
     Promise.all([
       apiQuery(base, 'categories', ['id', 'link', 'name', 'count'], categories),
@@ -47,34 +67,64 @@ function App() {
       apiQuery(base, 'posts', ['id', 'link', 'modified', 'type', 'status', 'title', 'categories'], posts),
     ])
       .then(() => {
-        console.log(`Data received: ${pages.length} pages and ${categories.length} categories`)
+        // Save URL for future use
         localStorage.setItem('wpSite', base);
+
+        // Select only categories with at least one post, and sort it
         categories = categories.filter(cat => cat.count > 0).sort((a, b) => a.name < b.name ? -1 : 1);
-        // Set all elements selected
-        [categories, pages, posts].forEach(set => set.forEach(el => el.selected = true));
-        // Convert 'modified' string to Date object
+
+        // Set all elements initially unselected
+        [categories, pages, posts].forEach(set => set.forEach(el => el.selected = false));
+
+        // Convert the 'modified' string to Date objects, and find the oldest one
+        let firstDate = new Date();
         [pages, posts].forEach(set => {
-          set.forEach(el => el.modified = new Date(el.modified));
+          set.forEach(el => {
+            el.modified = new Date(el.modified)
+            if (el.modified < firstDate)
+              firstDate = el.modified;
+          });
           set.sort((a, b) => {
             return a.modified > b.modified ? -1
               : a.modified < b.modified ? 1
                 : a.title < b.title ? -1 : 1;
           });
         });
-        setConf({ ...conf, loading: false, categories, pages, posts });
+
+        // Move `firstDate` back one day
+        firstDate = new Date(firstDate - 24 * 60 * 60 * 1000);
+
+        // Unset `loading` and save the new state
+        setConf({
+          ...conf,
+          loading: false,
+          categories, pages, posts,
+          dateFrom: firstDate,
+          numUrls: 0,
+        });
       })
       .catch(err => {
-        console.log(`Error fetching data: ${err}`)
+        console.log(`Error fetching data: ${err}`);
         setConf({ ...conf, loading: false, err });
       })
   }
 
+  // Query the WordPress REST API obtaining all the information related to one type of data
+  // Results are obtained with paginated calls using the max size (100 records per call)
+  // and requesting only specific fields 
   const apiQuery = (base, query, fields, result = [], pageSize = 100, page = 0, pages = 1) => {
+    // Build the API URL
     const url = `${base}/wp-json/wp/v2/${query}/?page=${++page}&per_page=${pageSize}&_envelope=1&${fields.map(f => `_fields[]=${f}`).join('&')}`;
-    console.log(`Fetching page ${page}/${pages} of ${url}`)
 
-    const next = () => page < pages ? apiQuery(base, query, fields, result, pageSize, page, pages) : result;
+    console.log(`Fetching page ${page}/${pages} of ${url}`);
 
+    // If there are more pages, prepare a recursive call to get more data
+    // Return `result` otherwise
+    const next = () => page < pages
+      ? apiQuery(base, query, fields, result, pageSize, page, pages)
+      : result;
+
+    // Fetch the API using JSONP to avoid CORS issues
     return fetchJsonp(url, {
       jsonpCallback: '_jsonp',
       timeout: 7000,
@@ -82,30 +132,45 @@ function App() {
       .then(response => handleFetchErrors(response))
       .then(response => response.json())
       .then(data => {
+        // Read the total number of pages
         if (data.headers && data.headers['X-WP-TotalPages'])
           pages = data.headers['X-WP-TotalPages'];
         if (data.body)
           result.push(...data.body);
+        // This will return `result` or just a promise call to the next page of results
         return next();
       })
       .catch(err => {
         console.log(`Error fetching page ${page} of ${query}: ${err}`);
+        // Make the API call tolerant to errors, returning always the accumulated result
         return next();
-      })
+      });
   }
 
+  // Mark as selected posts created or updated between the specified dates, and
+  // related to at least one selected category  
   const selectPostsByDateAndCategory = (dateFrom = conf.dateFrom, dateTo = conf.dateTo) => {
+
+    // Get the ids of selected categories
     const activeCategories = [];
-    conf.categories.forEach(cat => { if (cat.selected) activeCategories.push(cat.id) });
+    conf.categories.forEach(cat => {
+      if (cat.selected)
+        activeCategories.push(cat.id);
+    });
+
+    // Select or unselect posts based on its date and categories
     conf.posts.forEach(post => {
       const categories = post.categories || [];
       post.selected = post.modified >= dateFrom
         && post.modified <= dateTo
         && categories.map(cat => activeCategories.includes(cat)).includes(true);
     });
-    setConf({ ...conf, dateFrom, dateTo, err: null });
+
+    // Update dates and clear the error flag, if set
+    setConf({ ...conf, dateFrom, dateTo, err: null, numUrls: countUrls(false) });
   }
 
+  // Get the final list of URLs used in the carousel, maybe randomized
   const getUrls = () => {
     const urls = [];
     urls.push(...conf.posts.filter(post => post.selected).map(post => post.link));
@@ -116,49 +181,52 @@ function App() {
     return conf.randomOrder ? shuffle(urls) : urls;
   }
 
-  const countUrls = () => {
-    return conf.pages.filter(page => page.selected).length
+  // Count the current number of valid URLs
+  const countUrls = (updateConf = true) => {
+    const numUrls = conf.pages.filter(page => page.selected).length
       + conf.posts.filter(post => post.selected).length
-      + conf.includeCategoryPages ? conf.categories.filter(cat => cat.selected).length : 0;
+      + (conf.includeCategoryPages ? conf.categories.filter(cat => cat.selected).length : 0);
+    if (updateConf)
+      setConf({ ...conf, numUrls });
+    return numUrls;
   }
 
-  // Implementation of the Fisher-Yates (aka Knuth) Shuffle algorithm
+  // Shuffle the provided array using the Fisher-Yates (aka Knuth) algorithm
   // See: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
   const shuffle = array => {
-    var currentIndex = array.length, temporaryValue, randomIndex;
-
+    let currentIndex = array.length;
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {
-
       // Pick a remaining element...
-      randomIndex = Math.floor(Math.random() * currentIndex);
+      const randomIndex = Math.floor(Math.random() * currentIndex);
       currentIndex -= 1;
-
       // And swap it with the current element.
-      temporaryValue = array[currentIndex];
+      let temporaryValue = array[currentIndex];
       array[currentIndex] = array[randomIndex];
       array[randomIndex] = temporaryValue;
     }
     return array;
   }
 
+  // Set the `playing` value to true 
   const play = () => setPlaying(true);
 
+  // Main content
   return (
     <div className="App">
       {!playing &&
         <div>
           <Header />
-          <Settings {...{ conf, setConf, checkSite, selectPostsByDateAndCategory }} />
+          <Settings {...{ conf, setConf, checkSite, selectPostsByDateAndCategory, countUrls }} />
         </div>
       }
-      {!playing && conf.categories &&
+      {!playing &&
         <div className="playBtn">
           <Button
             variant="contained"
             color="primary"
             onClick={play}
-            disabled={countUrls() === 0}
+            disabled={conf.numUrls === 0}
           >
             Inicia la visualització
           <PlayArrow className="leftIcon" />

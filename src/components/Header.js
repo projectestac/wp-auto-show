@@ -1,13 +1,12 @@
 import React from 'react';
 
-function Header(props) {
+function Header() {
   return (
     <header className="head">
-      <h2><img src="ico/icon64.png" alt="Logotip" className="logo"/>Carrusel d'articles WordPress</h2>
+      <h2><img src="ico/icon64.png" alt="Logotip" className="logo" />Carrusel d'articles WordPress</h2>
       <p>
         Aquesta aplicació permet mostrar de manera automàtica el contingut d'un lloc web que
-        funcioni amb <a href="https://wordpress.org/" target="_blank" rel="noopener noreferrer">WordPress</a> (
-        <a href="https://blocs.xtec.cat/" target="_blank" rel="noopener noreferrer">XTEC-Blocs</a>, <a href="https://agora.xtec.cat/nodes/" target="_blank" rel="noopener noreferrer">Nodes</a>...)
+        funcioni amb WordPress, com ara XTEC-Blocs o Nodes.
       </p>
       <p>
         Comenceu per introduir l'URL del lloc web que vulgueu mostrar, espereu que es carreguin les dades (pot ser llarg!)
@@ -21,7 +20,6 @@ function Header(props) {
       </p>
     </header>
   );
-
 }
 
 export default Header;

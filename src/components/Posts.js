@@ -5,23 +5,22 @@ import ListItemText from '@material-ui/core/ListItemText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-function Posts(props) {
+function Posts({ conf, countUrls }) {
 
-  const { conf, setConf } = props;
-  const [allPosts, setAllPosts] = React.useState(true);
+  const [allPosts, setAllPosts] = React.useState(false);
 
   const handleListClick = post => () => {
     post.selected = !post.selected;
     if (!post.selected)
       setAllPosts(false);
-    setConf({ ...conf });
+    countUrls();
   };
 
   const checkAllPosts = () => {
     conf.posts.forEach(post => { post.selected = !allPosts });
-    setConf({ ...conf });
+    countUrls();
     setAllPosts(!allPosts);
-  }
+  };
 
   return (
     <div>

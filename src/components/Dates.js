@@ -3,9 +3,7 @@ import DateMomentUtils from '@date-io/moment';
 import "moment/locale/ca";
 import { MuiPickersUtilsProvider, DatePicker } from 'material-ui-pickers';
 
-function Dates(props) {
-
-  const { conf, setConf, selectPostsByDateAndCategory } = props;
+function Dates({ conf, setConf, selectPostsByDateAndCategory }) {
 
   const handleDateChange = date => d => {
     const dateFrom = date === 'from' ? d : conf.dateFrom;

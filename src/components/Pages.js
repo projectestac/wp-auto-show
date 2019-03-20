@@ -5,21 +5,20 @@ import ListItemText from '@material-ui/core/ListItemText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-function Pages(props) {
+function Pages({ conf, countUrls }) {
 
-  const { conf, setConf } = props;
-  const [allPages, setAllPages] = React.useState(true);
+  const [allPages, setAllPages] = React.useState(false);
 
   const handleListClick = page => () => {
     page.selected = !page.selected;
     if (!page.selected)
       setAllPages(false);
-    setConf({ ...conf });
+    countUrls();
   }
 
   const checkAllPages = () => {
     conf.pages.forEach(page => { page.selected = !allPages });
-    setConf({ ...conf });
+    countUrls();
     setAllPages(!allPages);
   }
 

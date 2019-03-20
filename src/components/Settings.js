@@ -10,9 +10,7 @@ import Pages from './Pages';
 import Dates from './Dates';
 import CarouselOptions from './CarouselOptions';
 
-function Settings(props) {
-
-  const { conf, setConf, checkSite, selectPostsByDateAndCategory } = props;
+function Settings({ conf, setConf, checkSite, selectPostsByDateAndCategory, countUrls }) {
 
   const handleChange = ev => setConf({ ...conf, [ev.target.id]: ev.target.value })
 
@@ -39,14 +37,11 @@ function Settings(props) {
       {conf.err && <p className="error">ERROR: {conf.err}</p>}
       {conf.posts && <Dates {...{ conf, setConf, selectPostsByDateAndCategory }} />}
       {conf.categories && <Categories {...{ conf, setConf, selectPostsByDateAndCategory }} />}
-      {conf.posts && <Posts {...{ conf, setConf }} />}
-      {conf.pages && <Pages {...{ conf, setConf }} />}
+      {conf.posts && <Posts {...{ conf, countUrls }} />}
+      {conf.pages && <Pages {...{ conf, countUrls }} />}
       {conf.categories && <CarouselOptions {...{ conf, setConf }} />}
     </Paper>
   );
-
 }
 
 export default Settings;
-
-

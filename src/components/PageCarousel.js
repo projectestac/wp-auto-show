@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 
-function PageCarousel(props) {
+function PageCarousel({ urls, interval }) {
 
+  // Hook for tracking the current page index
   const [currentPage, setCurrentPage] = useState(0);
-  const { urls, interval } = props;
 
+  // Prepare the next page
   window.setTimeout(() => {
     setCurrentPage((currentPage + 1) % urls.length);
   }, interval * 1000);

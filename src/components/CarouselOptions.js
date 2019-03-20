@@ -4,9 +4,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
-function CarouselOptions(props) {
-
-  const { conf, setConf } = props;
+function CarouselOptions({ conf, setConf }) {
 
   const handleIntervalChange = ev => {
     const v = ev.target.value;
@@ -58,7 +56,6 @@ function CarouselOptions(props) {
       />
     </div>
   );
-
 }
 
 export default CarouselOptions;

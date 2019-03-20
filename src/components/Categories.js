@@ -5,10 +5,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-function Categories(props) {
+function Categories({ conf, selectPostsByDateAndCategory }) {
 
-  const { conf, selectPostsByDateAndCategory } = props;
-  const [allCategories, setAllCategories] = React.useState(true);
+  const [allCategories, setAllCategories] = React.useState(false);
 
   const handleListClick = category => () => {
     category.selected = !category.selected;
