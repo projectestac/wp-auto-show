@@ -153,15 +153,17 @@ function App() {
         </div>
       }
       {!playing && conf.categories &&
-        <Button className="playBtn"
-          variant="contained"
-          color="primary"
-          onClick={play}
-          disabled={countUrls() === 0}
-        >
-          Inicia la visualització
+        <div className="playBtn">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={play}
+            disabled={countUrls() === 0}
+          >
+            Inicia la visualització
           <PlayArrow className="leftIcon" />
-        </Button>
+          </Button>
+        </div>
       }
       {playing &&
         <PageCarousel urls={getUrls()} interval={conf.interval} />

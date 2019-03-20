@@ -3,9 +3,68 @@
   "name": "WordPress random posts and pages",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "ico/icon16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "ico/icon24.png",
+      "sizes": "24x24",
+      "type": "image/png"
+    },
+    {
+      "src": "ico/icon32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "ico/icon48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "ico/icon64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "ico/icon72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "ico/icon96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "ico/icon144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "ico/icon168.png",
+      "sizes": "168x168",
+      "type": "image/png"
+    },
+    {
+      "src": "ico/icon192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "ico/icon512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "ico/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "ico/icon.svg",
+      "type": "image/svg+xml"
     }
   ],
   "start_url": ".",

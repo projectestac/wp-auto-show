@@ -3,7 +3,7 @@ import React from 'react';
 function Header(props) {
   return (
     <header className="head">
-      <h2>Carrusel d'articles WordPress</h2>
+      <h2><img src="ico/icon64.png" alt="Logotip" className="logo"/>Carrusel d'articles WordPress</h2>
       <p>
         Aquesta aplicació permet mostrar de manera automàtica el contingut d'un lloc web que
         funcioni amb <a href="https://wordpress.org/" target="_blank" rel="noopener noreferrer">WordPress</a> (
