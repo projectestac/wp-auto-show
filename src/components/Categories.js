@@ -4,8 +4,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Typography from '@material-ui/core/Typography';
 
-function Categories({ conf, selectPostsByDateAndCategory }) {
+function Categories({ conf: { categories }, selectPostsByDateAndCategory }) {
 
   const [allCategories, setAllCategories] = React.useState(false);
 
@@ -17,7 +18,7 @@ function Categories({ conf, selectPostsByDateAndCategory }) {
   }
 
   const checkAllCategories = () => {
-    conf.categories.forEach(cat => { cat.selected = !allCategories });
+    categories.forEach(cat => { cat.selected = !allCategories });
     selectPostsByDateAndCategory();
     setAllCategories(!allCategories);
   }
@@ -35,7 +36,7 @@ function Categories({ conf, selectPostsByDateAndCategory }) {
         label="Selecciona totes les categories"
       />
       <List className="catList" component="nav">
-        {conf.categories.map((cat, i) => (
+        {categories.map((cat, i) => (
           <ListItem
             key={i}
             selected={cat.selected}
@@ -47,6 +48,9 @@ function Categories({ conf, selectPostsByDateAndCategory }) {
           </ListItem>
         ))}
       </List>
+      <Typography variant="body2">
+        {categories.filter(cat => cat.selected).length}/{categories.length} categories seleccionades
+      </Typography>
     </div>
   );
 }

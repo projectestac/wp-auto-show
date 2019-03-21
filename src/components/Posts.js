@@ -4,8 +4,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Typography from '@material-ui/core/Typography';
 
-function Posts({ conf, countUrls }) {
+function Posts({ conf: { posts }, countUrls }) {
 
   const [allPosts, setAllPosts] = React.useState(false);
 
@@ -17,7 +18,7 @@ function Posts({ conf, countUrls }) {
   };
 
   const checkAllPosts = () => {
-    conf.posts.forEach(post => { post.selected = !allPosts });
+    posts.forEach(post => { post.selected = !allPosts });
     countUrls();
     setAllPosts(!allPosts);
   };
@@ -35,7 +36,7 @@ function Posts({ conf, countUrls }) {
         label="Selecciona tots els articles"
       />
       <List component="nav" className="postList">
-        {conf.posts.map((post, i) => (post.type === 'post' && post.status === 'publish' &&
+        {posts.filter(post => post.inRange).map((post, i) => (
           <ListItem
             key={i}
             selected={post.selected}
@@ -48,6 +49,9 @@ function Posts({ conf, countUrls }) {
           </ListItem>
         ))}
       </List>
+      <Typography variant="body2">
+        {posts.filter(post => post.selected).length}/{posts.filter(post => post.inRange).length} articles seleccionats
+      </Typography>
     </div>
   );
 }

@@ -20,11 +20,13 @@ function App() {
     err: null,
     loading: false,
     categories: null,
+    tags: null,
     pages: null,
     posts: null,
     dateFrom: new Date(),
     dateTo: new Date(),
     includeCategoryPages: true,
+    includeTagPages: false,
     randomOrder: true,
     numUrls: 0,
   });
@@ -60,21 +62,30 @@ function App() {
     });
 
     // Initialize main arrays and launch API queries
-    let categories = [], posts = [], pages = [];
+    let categories = [], tags = [], posts = [], pages = [];
     Promise.all([
       apiQuery(base, 'categories', ['id', 'link', 'name', 'count'], categories),
+      apiQuery(base, 'tags', ['id', 'link', 'name', 'count'], tags),
       apiQuery(base, 'pages', ['id', 'link', 'modified', 'type', 'status', 'title'], pages),
-      apiQuery(base, 'posts', ['id', 'link', 'modified', 'type', 'status', 'title', 'categories'], posts),
+      apiQuery(base, 'posts', ['id', 'link', 'modified', 'type', 'status', 'title', 'categories', 'tags'], posts),
     ])
       .then(() => {
+        if (categories.length === 0)
+          throw new Error("No s'ha trobat cap categoria! Podria ser que l'adreça fos incorrecta, que ara mateix no estigui funcionant o que no es tracti d'un lloc WordPress");
+
         // Save URL for future use
         localStorage.setItem('wpSite', base);
 
-        // Select only categories with at least one post, and sort it
+        // Select only categories and tags with at least one post, and sort them alphabetically
         categories = categories.filter(cat => cat.count > 0).sort((a, b) => a.name < b.name ? -1 : 1);
+        tags = tags.filter(tag => tag.count > 0).sort((a, b) => a.name < b.name ? -1 : 1);
 
         // Set all elements initially unselected
-        [categories, pages, posts].forEach(set => set.forEach(el => el.selected = false));
+        [categories, tags, pages, posts].forEach(set => set.forEach(el => el.selected = false));
+
+        // Set inRange flag to `true` for all published posts and plages
+        posts.forEach(post => post.inRange = post.type === 'post' && post.status === 'publish');
+        pages.forEach(page => page.inRange = page.type === 'page' && page.status === 'publish');
 
         // Convert the 'modified' string to Date objects, and find the oldest one
         let firstDate = new Date();
@@ -98,14 +109,16 @@ function App() {
         setConf({
           ...conf,
           loading: false,
-          categories, pages, posts,
+          categories, tags, pages, posts,
           dateFrom: firstDate,
+          dateTo: new Date(),
           numUrls: 0,
+          err: null,
         });
       })
       .catch(err => {
-        console.log(`Error fetching data: ${err}`);
-        setConf({ ...conf, loading: false, err });
+        console.log(`Error fetching data: ${err.message}`);
+        setConf({ ...conf, loading: false, err: err.message });
       })
   }
 
@@ -124,7 +137,7 @@ function App() {
       ? apiQuery(base, query, fields, result, pageSize, page, pages)
       : result;
 
-    // Fetch the API using JSONP to avoid CORS issues
+    // Avoid CORS issues fetching the API in JSONP mode
     return fetchJsonp(url, {
       jsonpCallback: '_jsonp',
       timeout: 7000,
@@ -151,19 +164,21 @@ function App() {
   // related to at least one selected category  
   const selectPostsByDateAndCategory = (dateFrom = conf.dateFrom, dateTo = conf.dateTo) => {
 
+    const { posts } = conf;
+
     // Get the ids of selected categories
-    const activeCategories = [];
-    conf.categories.forEach(cat => {
-      if (cat.selected)
-        activeCategories.push(cat.id);
-    });
+    //const activeCategories = [], activetags=[];
+    const activeCategories = conf.categories.filter(cat => cat.selected).map(cat => cat.id);
+    const activeTags = conf.tags.filter(tag => tag.selected).map(tag => tag.id);
 
     // Select or unselect posts based on its date and categories
-    conf.posts.forEach(post => {
-      const categories = post.categories || [];
-      post.selected = post.modified >= dateFrom
-        && post.modified <= dateTo
-        && categories.map(cat => activeCategories.includes(cat)).includes(true);
+    posts.forEach(post => {
+      const { categories, tags, modified, type, status } = post;
+      post.inRange = modified >= dateFrom && modified <= dateTo && type === 'post' && status === 'publish';
+      post.selected = post.inRange && (
+        categories.map(cat => activeCategories.includes(cat)).includes(true) ||
+        tags.map(tag => activeTags.includes(tag)).includes(true)
+      );
     });
 
     // Update dates and clear the error flag, if set
@@ -172,20 +187,25 @@ function App() {
 
   // Get the final list of URLs used in the carousel, maybe randomized
   const getUrls = () => {
+    const { posts, pages, categories, tags, includeCategoryPages, includeTagPages, randomOrder } = conf;
     const urls = [];
-    urls.push(...conf.posts.filter(post => post.selected).map(post => post.link));
-    urls.push(...conf.pages.filter(page => page.selected).map(page => page.link));
-    if (conf.includeCategoryPages)
-      urls.push(...conf.categories.filter(cat => cat.selected).map(cat => cat.link));
+    urls.push(...posts.filter(post => post.selected).map(post => post.link));
+    urls.push(...pages.filter(page => page.selected).map(page => page.link));
+    if (includeCategoryPages)
+      urls.push(...categories.filter(cat => cat.selected).map(cat => cat.link));
+    if (includeTagPages)
+      urls.push(...tags.filter(cat => cat.selected).map(cat => cat.link));
 
-    return conf.randomOrder ? shuffle(urls) : urls;
+    return randomOrder ? shuffle(urls) : urls;
   }
 
   // Count the current number of valid URLs
   const countUrls = (updateConf = true) => {
-    const numUrls = conf.pages.filter(page => page.selected).length
-      + conf.posts.filter(post => post.selected).length
-      + (conf.includeCategoryPages ? conf.categories.filter(cat => cat.selected).length : 0);
+    const { pages, posts, categories, tags, includeCategoryPages, includeTagPages } = conf;
+    const numUrls = pages.filter(page => page.selected).length
+      + posts.filter(post => post.selected).length
+      + (includeCategoryPages ? categories.filter(cat => cat.selected).length : 0)
+      + (includeTagPages ? tags.filter(tag => tag.selected).length : 0);
     if (updateConf)
       setConf({ ...conf, numUrls });
     return numUrls;

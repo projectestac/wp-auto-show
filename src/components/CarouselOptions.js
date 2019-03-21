@@ -19,6 +19,7 @@ function CarouselOptions({ conf, setConf }) {
   return (
     <div className="options">
       <h3>Opcions de visualització</h3>
+      <p>Heu seleccionat {conf.numUrls} {conf.numUrls === 1 ? 'element' : 'elements'} per mostrar.</p>
       <TextField
         id="interval"
         label="Temps entre pàgines"
@@ -52,7 +53,17 @@ function CarouselOptions({ conf, setConf }) {
             onChange={handleSwitchChange}
           />
         }
-        label="Mostra també les pàgines de les categories (blogs de curs...)"
+        label="Mostra les pàgines de les categories (cursos, grups, seccions...)"
+      />
+      <FormControlLabel
+        control={
+          <Switch
+            id='includeTagPages'
+            checked={conf.includeTagPages}
+            onChange={handleSwitchChange}
+          />
+        }
+        label="Mostra les pàgines de les etiquetes (projectes, activitats, campanyes...)'"
       />
     </div>
   );

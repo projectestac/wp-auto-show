@@ -4,8 +4,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Typography from '@material-ui/core/Typography';
 
-function Pages({ conf, countUrls }) {
+function Pages({ conf: { pages }, countUrls }) {
 
   const [allPages, setAllPages] = React.useState(false);
 
@@ -17,7 +18,7 @@ function Pages({ conf, countUrls }) {
   }
 
   const checkAllPages = () => {
-    conf.pages.forEach(page => { page.selected = !allPages });
+    pages.forEach(page => { page.selected = !allPages });
     countUrls();
     setAllPages(!allPages);
   }
@@ -35,7 +36,7 @@ function Pages({ conf, countUrls }) {
         label="Selecciona totes les pàgines"
       />
       <List className="pagesList" component="nav">
-        {conf.pages.map((page, i) => (page.type === 'page' && page.status === 'publish' &&
+        {pages.filter(page => page.inRange).map((page, i) => (
           <ListItem
             key={i}
             selected={page.selected}
@@ -48,6 +49,9 @@ function Pages({ conf, countUrls }) {
           </ListItem>
         ))}
       </List>
+      <Typography variant="body2">
+        {pages.filter(page => page.inRange && page.selected).length}/{pages.filter(page => page.inRange).length} pàgines seleccionades
+      </Typography>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Waiting from './Waiting';
 import Categories from './Categories';
+import Tags from './Tags';
 import Posts from './Posts';
 import Pages from './Pages';
 import Dates from './Dates';
@@ -37,6 +38,7 @@ function Settings({ conf, setConf, checkSite, selectPostsByDateAndCategory, coun
       {conf.err && <p className="error">ERROR: {conf.err}</p>}
       {conf.posts && <Dates {...{ conf, setConf, selectPostsByDateAndCategory }} />}
       {conf.categories && <Categories {...{ conf, setConf, selectPostsByDateAndCategory }} />}
+      {conf.tags && <Tags {...{ conf, setConf, selectPostsByDateAndCategory }} />}
       {conf.posts && <Posts {...{ conf, countUrls }} />}
       {conf.pages && <Pages {...{ conf, countUrls }} />}
       {conf.categories && <CarouselOptions {...{ conf, setConf }} />}

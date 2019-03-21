@@ -44,6 +44,7 @@
   overflow: auto;
   border: 1px solid gray;
   cursor: pointer;
+  margin-bottom: 0.3rem !important;
 }
 
 h3 {
