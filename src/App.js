@@ -6,6 +6,7 @@ import Settings from './components/Settings';
 import Button from '@material-ui/core/Button';
 import PlayArrow from '@material-ui/icons/PlayArrow'
 import Header from './components/Header';
+import Footer from './components/Footer';
 
 /**
  * Main stateles component 
@@ -241,16 +242,19 @@ function App() {
         </div>
       }
       {!playing &&
-        <div className="playBtn">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={play}
-            disabled={conf.numUrls === 0}
-          >
-            Inicia la visualització
+        <div>
+          <div className="playBtn">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={play}
+              disabled={conf.numUrls === 0}
+            >
+              Inicia la visualització
           <PlayArrow className="leftIcon" />
-          </Button>
+            </Button>
+          </div>
+          <Footer />
         </div>
       }
       {playing &&

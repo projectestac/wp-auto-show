@@ -83,3 +83,9 @@ h3 {
   width: 10rem;
   margin: 1rem 0 !important;
 }
+.foot {
+  margin: 3rem auto;
+  text-align: center;
+  font-size: 0.8rem;
+  color: gray;
+}
