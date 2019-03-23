@@ -6,7 +6,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 
-function Categories({ conf: { categories }, selectPostsByDateAndCategory }) {
+function Categories({ conf: { categories }, selectPostsByDateAndCategory, t }) {
 
   const [allCategories, setAllCategories] = React.useState(false);
 
@@ -25,7 +25,7 @@ function Categories({ conf: { categories }, selectPostsByDateAndCategory }) {
 
   return (
     <div>
-      <h3>Categories</h3>
+      <h3>{t('categories')}</h3>
       <FormControlLabel
         control={
           <Checkbox
@@ -33,7 +33,7 @@ function Categories({ conf: { categories }, selectPostsByDateAndCategory }) {
             onChange={checkAllCategories}
           />
         }
-        label="Selecciona totes les categories"
+        label={t('categories_select_all')}
       />
       <List className="catList" component="nav">
         {categories.map((cat, i) => (
@@ -49,7 +49,7 @@ function Categories({ conf: { categories }, selectPostsByDateAndCategory }) {
         ))}
       </List>
       <Typography variant="body2">
-        {categories.filter(cat => cat.selected).length}/{categories.length} categories seleccionades
+        {categories.filter(cat => cat.selected).length}/{categories.length} {t('categories_selected')}
       </Typography>
     </div>
   );

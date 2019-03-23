@@ -6,7 +6,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 
-function Pages({ conf: { pages }, countUrls }) {
+function Pages({ conf: { pages }, countUrls, t }) {
 
   const [allPages, setAllPages] = React.useState(false);
 
@@ -25,7 +25,7 @@ function Pages({ conf: { pages }, countUrls }) {
 
   return (
     <div>
-      <h3>Pàgines</h3>
+      <h3>{t('pages')}</h3>
       <FormControlLabel
         control={
           <Checkbox
@@ -33,7 +33,7 @@ function Pages({ conf: { pages }, countUrls }) {
             onChange={checkAllPages}
           />
         }
-        label="Selecciona totes les pàgines"
+        label={t('pages_select_all')}
       />
       <List className="pagesList" component="nav">
         {pages.filter(page => page.inRange).map((page, i) => (
@@ -50,7 +50,7 @@ function Pages({ conf: { pages }, countUrls }) {
         ))}
       </List>
       <Typography variant="body2">
-        {pages.filter(page => page.inRange && page.selected).length}/{pages.filter(page => page.inRange).length} pàgines seleccionades
+        {pages.filter(page => page.inRange && page.selected).length}/{pages.filter(page => page.inRange).length} {t('pages_selected')}
       </Typography>
     </div>
   );

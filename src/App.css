@@ -3,7 +3,6 @@
   margin-bottom: -1rem;
 }
 
-
 .main, .head {
   max-width: 800px;
   text-align: left;
@@ -16,6 +15,25 @@
     margin: 1rem auto;
     max-width: 800px;
   }
+}
+
+.langSelector ul {
+  list-style: none;
+  text-align: right;  
+  padding: 0;
+  margin: 0;
+}
+
+.langSelector li {
+  display: inline;
+  margin-left: 0.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: gray;
+}
+
+.langSelector .curLang {
+  color: black;
 }
 
 .sitePrompt {

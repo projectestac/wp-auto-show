@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
+import i18n from './i18n';
+import { useTranslation } from 'react-i18next';
 import fetchJsonp from 'fetch-jsonp';
 import PageCarousel from './components/PageCarousel';
 import Settings from './components/Settings';
@@ -12,6 +14,8 @@ import Footer from './components/Footer';
  * Main stateles component 
  */
 function App() {
+
+  const { t } = useTranslation();
 
   // Hook with miscellaneous state variables
   const [conf, setConf] = useState({
@@ -237,8 +241,8 @@ function App() {
     <div className="App">
       {!playing &&
         <div>
-          <Header />
-          <Settings {...{ conf, setConf, checkSite, selectPostsByDateAndCategory, countUrls }} />
+          <Header {...{ t, i18n }} />
+          <Settings {...{ conf, setConf, checkSite, selectPostsByDateAndCategory, countUrls, t, i18n }} />
         </div>
       }
       {!playing &&
@@ -250,11 +254,11 @@ function App() {
               onClick={play}
               disabled={conf.numUrls === 0}
             >
-              Inicia la visualització
-          <PlayArrow className="leftIcon" />
+              {t('start')}
+              <PlayArrow className="leftIcon" />
             </Button>
           </div>
-          <Footer />
+          <Footer {...{ t }} />
         </div>
       }
       {playing &&

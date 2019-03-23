@@ -4,7 +4,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 
-function CarouselOptions({ conf, setConf }) {
+function CarouselOptions({ conf, setConf, t }) {
 
   const handleIntervalChange = ev => {
     const v = ev.target.value;
@@ -18,11 +18,11 @@ function CarouselOptions({ conf, setConf }) {
 
   return (
     <div className="options">
-      <h3>Opcions de visualització</h3>
-      <p>Heu seleccionat {conf.numUrls} {conf.numUrls === 1 ? 'element' : 'elements'} per mostrar.</p>
+      <h3>{t('show_options')}</h3>
+      <p>{t('selected_elements', { count: conf.numUrls })}</p>
       <TextField
         id="interval"
-        label="Temps entre pàgines"
+        label={t('timelapse')}
         className="intervalInput"
         variant="outlined"
         type="number"
@@ -32,7 +32,7 @@ function CarouselOptions({ conf, setConf }) {
         }}
         onChange={handleIntervalChange}
         InputProps={{
-          endAdornment: <InputAdornment position="end">Segons</InputAdornment>
+          endAdornment: <InputAdornment position="end">{t('seconds')}</InputAdornment>
         }}
       />
       <FormControlLabel
@@ -43,7 +43,7 @@ function CarouselOptions({ conf, setConf }) {
             onChange={handleSwitchChange}
           />
         }
-        label="Mostra les pàgines i els articles en ordre aleatori"
+        label={t('random')}
       />
       <FormControlLabel
         control={
@@ -53,7 +53,7 @@ function CarouselOptions({ conf, setConf }) {
             onChange={handleSwitchChange}
           />
         }
-        label="Mostra les pàgines de les categories (cursos, grups, seccions...)"
+        label={t('include_category_pages')}
       />
       <FormControlLabel
         control={
@@ -63,7 +63,7 @@ function CarouselOptions({ conf, setConf }) {
             onChange={handleSwitchChange}
           />
         }
-        label="Mostra les pàgines de les etiquetes (projectes, activitats, campanyes...)'"
+        label={t('include_tag_pages')}
       />
     </div>
   );

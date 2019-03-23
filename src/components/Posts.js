@@ -6,7 +6,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Typography from '@material-ui/core/Typography';
 
-function Posts({ conf: { posts }, countUrls }) {
+function Posts({ conf: { posts }, countUrls, t }) {
 
   const [allPosts, setAllPosts] = React.useState(false);
 
@@ -25,7 +25,7 @@ function Posts({ conf: { posts }, countUrls }) {
 
   return (
     <div>
-      <h3>Articles</h3>
+      <h3>{t('posts')}</h3>
       <FormControlLabel
         control={
           <Checkbox
@@ -33,7 +33,7 @@ function Posts({ conf: { posts }, countUrls }) {
             onChange={checkAllPosts}
           />
         }
-        label="Selecciona tots els articles"
+        label={t('posts_select_all')}
       />
       <List component="nav" className="postList">
         {posts.filter(post => post.inRange).map((post, i) => (
@@ -50,7 +50,7 @@ function Posts({ conf: { posts }, countUrls }) {
         ))}
       </List>
       <Typography variant="body2">
-        {posts.filter(post => post.selected).length}/{posts.filter(post => post.inRange).length} articles seleccionats
+        {posts.filter(post => post.selected).length}/{posts.filter(post => post.inRange).length} {t('posts_selected')}
       </Typography>
     </div>
   );

@@ -11,7 +11,7 @@ import Pages from './Pages';
 import Dates from './Dates';
 import CarouselOptions from './CarouselOptions';
 
-function Settings({ conf, setConf, checkSite, selectPostsByDateAndCategory, countUrls }) {
+function Settings({ conf, setConf, checkSite, selectPostsByDateAndCategory, countUrls, t, i18n }) {
 
   const handleChange = ev => setConf({ ...conf, [ev.target.id]: ev.target.value })
 
@@ -20,7 +20,7 @@ function Settings({ conf, setConf, checkSite, selectPostsByDateAndCategory, coun
       <div className="sitePrompt">
         <TextField
           id="wpSite"
-          label="URL del lloc web WordPress (bloc, Nodes...)"
+          label={t('url')}
           value={conf.wpSite}
           onChange={handleChange}
           margin="normal"
@@ -31,17 +31,17 @@ function Settings({ conf, setConf, checkSite, selectPostsByDateAndCategory, coun
           onClick={checkSite}
           disabled={!validator.isURL(conf.wpSite)}
         >
-          Connecta
+          {t('connect')}
         </Button>
       </div>
-      {conf.loading && <Waiting />}
-      {conf.err && <p className="error">ERROR: {conf.err}</p>}
-      {conf.posts && <Dates {...{ conf, setConf, selectPostsByDateAndCategory }} />}
-      {conf.categories && <Categories {...{ conf, setConf, selectPostsByDateAndCategory }} />}
-      {conf.tags && <Tags {...{ conf, setConf, selectPostsByDateAndCategory }} />}
-      {conf.posts && <Posts {...{ conf, countUrls }} />}
-      {conf.pages && <Pages {...{ conf, countUrls }} />}
-      {conf.categories && <CarouselOptions {...{ conf, setConf }} />}
+      {conf.loading && <Waiting {...{t}}/>}
+      {conf.err && <p className="error">{`${t('error')}: ${conf.err}`}</p>}
+      {conf.posts && <Dates {...{ conf, setConf, selectPostsByDateAndCategory, t, i18n }} />}
+      {conf.categories && <Categories {...{ conf, setConf, selectPostsByDateAndCategory, t }} />}
+      {conf.tags && <Tags {...{ conf, setConf, selectPostsByDateAndCategory, t }} />}
+      {conf.posts && <Posts {...{ conf, countUrls, t }} />}
+      {conf.pages && <Pages {...{ conf, countUrls, t }} />}
+      {conf.categories && <CarouselOptions {...{ conf, setConf, t }} />}
     </Paper>
   );
 }
