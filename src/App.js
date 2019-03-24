@@ -10,6 +10,9 @@ import PlayArrow from '@material-ui/icons/PlayArrow'
 import Header from './components/Header';
 import Footer from './components/Footer';
 
+
+const STORED_VALUES = JSON.parse(localStorage.getItem('wpShow') || '{}');
+
 /**
  * Main stateles component 
  */
@@ -19,8 +22,8 @@ function App() {
 
   // Hook with miscellaneous state variables
   const [conf, setConf] = useState({
-    wpSite: localStorage.getItem('wpSite') || '',
-    interval: 10,
+    wpSite: STORED_VALUES.wpSite || '',
+    interval: STORED_VALUES.interval || 10,
     ready: false,
     err: null,
     loading: false,
@@ -28,11 +31,11 @@ function App() {
     tags: null,
     pages: null,
     posts: null,
-    dateFrom: new Date(),
-    dateTo: new Date(),
-    includeCategoryPages: true,
-    includeTagPages: false,
-    randomOrder: true,
+    dateFrom: new Date(STORED_VALUES.from || Date.now()),
+    dateTo: new Date(STORED_VALUES.to || Date.now()),
+    includeCategoryPages: !(STORED_VALUES.includeCategoryPages === false),
+    includeTagPages: STORED_VALUES.includeTagPages === true,
+    randomOrder: !(STORED_VALUES.randomOrder === false),
     numUrls: 0,
   });
 
@@ -78,15 +81,17 @@ function App() {
         if (categories.length === 0)
           throw new Error("No s'ha trobat cap categoria! Podria ser que l'adreça fos incorrecta, que ara mateix no estigui funcionant o que no es tracti d'un lloc WordPress");
 
-        // Save URL for future use
-        localStorage.setItem('wpSite', base);
-
         // Select only categories and tags with at least one post, and sort them alphabetically
         categories = categories.filter(cat => cat.count > 0).sort((a, b) => a.name < b.name ? -1 : 1);
         tags = tags.filter(tag => tag.count > 0).sort((a, b) => a.name < b.name ? -1 : 1);
 
-        // Set all elements initially unselected
-        [categories, tags, pages, posts].forEach(set => set.forEach(el => el.selected = false));
+        // Clear stored values if 'wpSite' has changed
+        if (base !== STORED_VALUES.wpSite)
+          Object.assign(STORED_VALUES, { categories: [], tags: [], pages: [], posts: [] });
+
+        // Set the initial `selected` state for all items
+        const sss = [STORED_VALUES.categories, STORED_VALUES.tags, STORED_VALUES.pages, STORED_VALUES.posts];
+        [categories, tags, pages, posts].forEach((set, i) => set.forEach(el => el.selected = sss[i].includes(el.id)));
 
         // Set inRange flag to `true` for all published posts and plages
         posts.forEach(post => post.inRange = post.type === 'post' && post.status === 'publish');
@@ -109,17 +114,19 @@ function App() {
 
         // Move `firstDate` back one day
         firstDate = new Date(firstDate - 24 * 60 * 60 * 1000);
-
+        
         // Unset `loading` and save the new state
+        const {includeCategoryPages, includeTagPages} = conf;
         setConf({
           ...conf,
           loading: false,
           categories, tags, pages, posts,
           dateFrom: firstDate,
           dateTo: new Date(),
-          numUrls: 0,
+          numUrls: doCountUrls({pages, posts, categories, tags, includeCategoryPages, includeTagPages}),
           err: null,
         });
+
       })
       .catch(err => {
         console.log(`Error fetching data: ${err.message}`);
@@ -206,14 +213,17 @@ function App() {
 
   // Count the current number of valid URLs
   const countUrls = (updateConf = true) => {
-    const { pages, posts, categories, tags, includeCategoryPages, includeTagPages } = conf;
-    const numUrls = pages.filter(page => page.selected).length
-      + posts.filter(post => post.selected).length
-      + (includeCategoryPages ? categories.filter(cat => cat.selected).length : 0)
-      + (includeTagPages ? tags.filter(tag => tag.selected).length : 0);
+    const numUrls = doCountUrls(conf);
     if (updateConf)
       setConf({ ...conf, numUrls });
     return numUrls;
+  }
+
+  const doCountUrls = ({pages, posts, categories, tags, includeCategoryPages, includeTagPages}) => {
+    return pages.filter(page => page.selected).length
+      + posts.filter(post => post.selected).length
+      + (includeCategoryPages ? categories.filter(cat => cat.selected).length : 0)
+      + (includeTagPages ? tags.filter(tag => tag.selected).length : 0);
   }
 
   // Shuffle the provided array using the Fisher-Yates (aka Knuth) algorithm
@@ -233,8 +243,31 @@ function App() {
     return array;
   }
 
+  const saveSettings = () => {
+    // Update the `STORED_VALUES` object
+    Object.assign(STORED_VALUES, {
+      wpSite: conf.wpSite,
+      interval: conf.interval,
+      from: conf.dateFrom.getTime(),
+      to: conf.dateTo.getTime(),
+      includeCategoryPages: conf.includeCategoryPages,
+      includeTagPages: conf.includeTagPages,
+      randomOrder: conf.randomOrder,
+      categories: conf.categories.filter(e => e.selected).map(e => e.id),
+      tags: conf.tags.filter(e => e.selected).map(e => e.id),
+      pages: conf.pages.filter(e => e.selected).map(e => e.id),
+      posts: conf.posts.filter(e => e.selected).map(e => e.id),
+    });
+
+    // Save settings in browser's local storage
+    localStorage.setItem('wpShow', JSON.stringify(STORED_VALUES));
+  }
+
   // Set the `playing` value to true 
-  const play = () => setPlaying(true);
+  const play = () => {
+    saveSettings();
+    setPlaying(true);
+  }
 
   // Main content
   return (

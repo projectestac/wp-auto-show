@@ -8,7 +8,7 @@ i18n
   .use(initReactI18next)
   .init({
     detection: {
-      order: ['navigator'],
+      order: ['querystring', 'localStorage', 'navigator'],
     },
     resources: {
       en: {
@@ -46,7 +46,7 @@ i18n
           include_category_pages: "Include category pages (courses, groups, sections...)",
           include_tag_pages: "Include tag pages (projects, activities, campaigns...)",
           start: "Start showing",
-          copyright1: "© 2019 Catalonia's Education Ministry",
+          copyright1: "© 2019 Catalonia's Education Telematic Network (XTEC)",
           copyright2: "European Union Public License EUPL v. 1.2",
         },
       },
@@ -85,7 +85,7 @@ i18n
           include_category_pages: "Mostra les pàgines de les categories (cursos, grups, seccions...)",
           include_tag_pages: "Mostra les pàgines de les etiquetes (projectes, activitats, campanyes...)",
           start: "Inicia la visualització",
-          copyright1: "© 2019 Departament d'Educació de la Generalitat de Catalunya",
+          copyright1: "© 2019 Xarxa Telemàtica Educativa de Catalunya (XTEC)",
           copyright2: "Llicència Pública de la Unió Europea EUPL v. 1.2",
         },
       },
@@ -124,7 +124,7 @@ i18n
           include_category_pages: "Muestra las páginas de categorías (cursos, grupos, secciones...)",
           include_tag_pages: "Muestra las páginas de etiquetas (proyectos, actividades, campañas...)",
           start: "Iniciar la visualización",
-          copyright1: "© 2019 Departamento de Educación de la Generalitat de Cataluña",
+          copyright1: "© 2019 Red Telemática Educativa de Cataluña (XTEC)",
           copyright2: "Licencia Pública de la Unión Europea EUPL v. 1.2",
         },
       },

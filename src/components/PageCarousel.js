@@ -16,7 +16,7 @@ function PageCarousel({ urls, interval }) {
         className="pageView"
         name="view"
         title="Page view"
-        allowFullScreen="true"
+        allowFullScreen={true}
         src={urls[currentPage]}
         onLoad={() => window.scrollTo(0, 0)}
       >
