@@ -2,7 +2,8 @@
   "name": "wp-show",
   "title": "WP Show",
   "description": "Utility for automatic, unattended viewing of WordPress sites",
-  "version": "1.0.2",
+  "keywords": ["wordpress", "react", "automation", "material-ui"],
+  "version": "2.4.0",
   "author": "Francesc Busquets <francesc@gmail.com>",
   "private": true,
   "homepage": ".",
@@ -10,12 +11,6 @@
     "type": "git",
     "url": "https://github.com/projectestac/wp-show"
   },
-  "licenses": [
-    {
-      "type": "EUPL-1.2",
-      "url": "https://spdx.org/licenses/EUPL-1.2.html"
-    }
-  ],
   "license": "EUPL-1.2",
   "dependencies": {
     "@date-io/moment": "^1.1.0",

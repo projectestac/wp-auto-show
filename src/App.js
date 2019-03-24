@@ -33,6 +33,7 @@ function App() {
     posts: null,
     dateFrom: new Date(STORED_VALUES.from || Date.now()),
     dateTo: new Date(STORED_VALUES.to || Date.now()),
+    dateFirst: new Date(),
     includeCategoryPages: !(STORED_VALUES.includeCategoryPages === false),
     includeTagPages: STORED_VALUES.includeTagPages === true,
     randomOrder: !(STORED_VALUES.randomOrder === false),
@@ -93,17 +94,13 @@ function App() {
         const sss = [STORED_VALUES.categories, STORED_VALUES.tags, STORED_VALUES.pages, STORED_VALUES.posts];
         [categories, tags, pages, posts].forEach((set, i) => set.forEach(el => el.selected = sss[i].includes(el.id)));
 
-        // Set inRange flag to `true` for all published posts and plages
-        posts.forEach(post => post.inRange = post.type === 'post' && post.status === 'publish');
-        pages.forEach(page => page.inRange = page.type === 'page' && page.status === 'publish');
-
         // Convert the 'modified' string to Date objects, and find the oldest one
         let firstDate = new Date();
         [pages, posts].forEach(set => {
           set.forEach(el => {
             el.modified = new Date(el.modified)
             if (el.modified < firstDate)
-              firstDate = el.modified;
+            firstDate = el.modified;
           });
           set.sort((a, b) => {
             return a.modified > b.modified ? -1
@@ -113,17 +110,22 @@ function App() {
         });
 
         // Move `firstDate` back one day
-        firstDate = new Date(firstDate - 24 * 60 * 60 * 1000);
-        
+        let from = STORED_VALUES.from || firstDate - 24 * 60 * 60 * 1000;
+
+        // Set inRange flag to `true` for all published posts and plages
+        posts.forEach(post => post.inRange = post.type === 'post' && post.status === 'publish' && post.modified >= from);
+        pages.forEach(page => page.inRange = page.type === 'page' && page.status === 'publish');
+
         // Unset `loading` and save the new state
-        const {includeCategoryPages, includeTagPages} = conf;
+        const { includeCategoryPages, includeTagPages } = conf;
         setConf({
           ...conf,
           loading: false,
           categories, tags, pages, posts,
-          dateFrom: firstDate,
+          dateFirst: new Date(firstDate),
+          dateFrom: new Date(from),
           dateTo: new Date(),
-          numUrls: doCountUrls({pages, posts, categories, tags, includeCategoryPages, includeTagPages}),
+          numUrls: doCountUrls({ pages, posts, categories, tags, includeCategoryPages, includeTagPages }),
           err: null,
         });
 
@@ -174,9 +176,7 @@ function App() {
 
   // Mark as selected posts created or updated between the specified dates, and
   // related to at least one selected category  
-  const selectPostsByDateAndCategory = (dateFrom = conf.dateFrom, dateTo = conf.dateTo) => {
-
-    const { posts } = conf;
+  const selectPostsByDateAndCategory = (dateFrom = conf.dateFrom, dateTo = conf.dateTo, posts = conf.posts, updateConf = true) => {
 
     // Get the ids of selected categories
     //const activeCategories = [], activetags=[];
@@ -194,7 +194,8 @@ function App() {
     });
 
     // Update dates and clear the error flag, if set
-    setConf({ ...conf, dateFrom, dateTo, err: null, numUrls: countUrls(false) });
+    if (updateConf)
+      setConf({ ...conf, dateFrom, dateTo, err: null, numUrls: countUrls(false) });
   }
 
   // Get the final list of URLs used in the carousel, maybe randomized
@@ -219,7 +220,7 @@ function App() {
     return numUrls;
   }
 
-  const doCountUrls = ({pages, posts, categories, tags, includeCategoryPages, includeTagPages}) => {
+  const doCountUrls = ({ pages, posts, categories, tags, includeCategoryPages, includeTagPages }) => {
     return pages.filter(page => page.selected).length
       + posts.filter(post => post.selected).length
       + (includeCategoryPages ? categories.filter(cat => cat.selected).length : 0)

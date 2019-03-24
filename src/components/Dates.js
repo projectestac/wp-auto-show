@@ -6,13 +6,15 @@ import { MuiPickersUtilsProvider, DatePicker } from 'material-ui-pickers';
 
 function Dates({ conf, setConf, selectPostsByDateAndCategory, t, i18n }) {
 
-  const handleDateChange = date => d => {
-    const dateFrom = date === 'from' ? d : conf.dateFrom;
-    const dateTo = date === 'to' ? d : conf.dateTo;
-    if (dateFrom > dateTo)
+  const { dateFrom, dateTo, dateFirst } = conf;
+
+  const handleDateChange = whichDate => moment => {
+    const from = whichDate === 'from' ? moment.toDate() : dateFrom;
+    const to = whichDate === 'to' ? moment.toDate() : dateTo;
+    if (from > to)
       setConf({ ...conf, err: t('date_err1') });
     else {
-      selectPostsByDateAndCategory(dateFrom, dateTo);
+      selectPostsByDateAndCategory(from, to);
     }
   };
 
@@ -38,6 +40,7 @@ function Dates({ conf, setConf, selectPostsByDateAndCategory, t, i18n }) {
           value={conf.dateTo}
           onChange={handleDateChange('to')}
         />
+        <p className="dateFirstNote">{t('first_date')} {dateFirst.toLocaleDateString()}</p>
       </div>
     </MuiPickersUtilsProvider>
   );
