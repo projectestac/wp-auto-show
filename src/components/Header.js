@@ -27,6 +27,7 @@ function Header(props) {
       <p>{t('desc1')}</p>
       <p>{t('desc2')}</p>
       <p>{t('desc3')}</p>
+      <p>{t('desc4')}</p>
     </header>
   );
 }

@@ -5,9 +5,8 @@ import { useTranslation } from 'react-i18next';
 import fetchJsonp from 'fetch-jsonp';
 import PageCarousel from './components/PageCarousel';
 import Settings from './components/Settings';
-import Button from '@material-ui/core/Button';
-import PlayArrow from '@material-ui/icons/PlayArrow'
 import Header from './components/Header';
+import ActionButtons from './components/ActionButtons';
 import Footer from './components/Footer';
 
 
@@ -100,7 +99,7 @@ function App() {
           set.forEach(el => {
             el.modified = new Date(el.modified)
             if (el.modified < firstDate)
-            firstDate = el.modified;
+              firstDate = el.modified;
           });
           set.sort((a, b) => {
             return a.modified > b.modified ? -1
@@ -264,12 +263,6 @@ function App() {
     localStorage.setItem('wpShow', JSON.stringify(STORED_VALUES));
   }
 
-  // Set the `playing` value to true 
-  const play = () => {
-    saveSettings();
-    setPlaying(true);
-  }
-
   // Main content
   return (
     <div className="App">
@@ -277,21 +270,7 @@ function App() {
         <div>
           <Header {...{ t, i18n }} />
           <Settings {...{ conf, setConf, checkSite, selectPostsByDateAndCategory, countUrls, t, i18n }} />
-        </div>
-      }
-      {!playing &&
-        <div>
-          <div className="playBtn">
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={play}
-              disabled={conf.numUrls === 0}
-            >
-              {t('start')}
-              <PlayArrow className="leftIcon" />
-            </Button>
-          </div>
+          <ActionButtons {...{ conf, saveSettings, i18n, t, getUrls, setPlaying }} />
           <Footer {...{ t }} />
         </div>
       }

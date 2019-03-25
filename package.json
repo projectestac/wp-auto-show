@@ -3,7 +3,7 @@
   "title": "WP Show",
   "description": "Utility for automatic, unattended viewing of WordPress sites",
   "keywords": ["wordpress", "react", "automation", "material-ui"],
-  "version": "2.4.0",
+  "version": "2.5.0",
   "author": "Francesc Busquets <francesc@gmail.com>",
   "private": true,
   "homepage": ".",
