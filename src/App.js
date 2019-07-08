@@ -74,8 +74,8 @@ function App() {
     Promise.all([
       apiQuery(base, 'categories', ['id', 'link', 'name', 'count'], categories),
       apiQuery(base, 'tags', ['id', 'link', 'name', 'count'], tags),
-      apiQuery(base, 'pages', ['id', 'link', 'modified', 'type', 'status', 'title'], pages),
-      apiQuery(base, 'posts', ['id', 'link', 'modified', 'type', 'status', 'title', 'categories', 'tags'], posts),
+      apiQuery(base, 'pages', ['id', 'link', 'modified', 'type', 'status', 'title', 'excerpt'], pages),
+      apiQuery(base, 'posts', ['id', 'link', 'modified', 'type', 'status', 'title', 'excerpt', 'categories', 'tags'], posts),
     ])
       .then(() => {
         if (categories.length === 0)
@@ -211,6 +211,15 @@ function App() {
     return randomOrder ? shuffle(urls) : urls;
   }
 
+  // Get the content of selected artiocles and pages
+  const getExcerpts = () => {
+    const { posts, pages, randomOrder } = conf;
+    const excerpts = [];
+    excerpts.push(...posts.filter(post => post.selected).map(({ link, title, excerpt })=>({link, title: title.rendered, excerpt: excerpt.rendered})));
+    excerpts.push(...pages.filter(page => page.selected).map(({ link, title, excerpt })=>({link, title: title.rendered, excerpt: excerpt.rendered})));
+    return randomOrder ? shuffle(excerpts) : excerpts;
+  }
+
   // Count the current number of valid URLs
   const countUrls = (updateConf = true) => {
     const numUrls = doCountUrls(conf);
@@ -270,7 +279,7 @@ function App() {
         <div>
           <Header {...{ t, i18n }} />
           <Settings {...{ conf, setConf, checkSite, selectPostsByDateAndCategory, countUrls, t, i18n }} />
-          <ActionButtons {...{ conf, saveSettings, i18n, t, getUrls, setPlaying }} />
+          <ActionButtons {...{ conf, saveSettings, i18n, t, getUrls, getExcerpts, setPlaying }} />
           <Footer {...{ t }} />
         </div>
       }

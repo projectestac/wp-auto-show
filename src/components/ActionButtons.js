@@ -5,7 +5,7 @@ import SaveIcon from '@material-ui/icons/SaveAlt';
 
 function ActionButtons(props) {
 
-  const { conf, saveSettings, i18n, t, getUrls, setPlaying } = props;
+  const { conf, saveSettings, i18n, t, getUrls, getExcerpts, setPlaying } = props;
 
   const exportToFile = () => {
     saveSettings();
@@ -57,6 +57,39 @@ function ActionButtons(props) {
     }
   }
 
+  const exportToBulletin = () => {
+    saveSettings();
+    const fileName = 'bulletin.html';
+    const content = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">     
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>${t('bulletin_title')}</title>     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>     
+  </head>
+  <body>
+${getExcerpts().map(({ link, title, excerpt }) => `<h1>${title}</h1>\n<article>${excerpt}</article>`).join('\n')}
+  </body>     
+</html>`;
+
+    const blob = new Blob([content], { type: 'text/html;charset=utf-8;' });
+    if (navigator.msSaveBlob) { // IE 10+
+      navigator.msSaveBlob(blob, fileName);
+    } else {
+      var link = document.createElement("a");
+      if (link.download !== undefined) { // feature detection
+        // Browsers that support HTML5 download attribute
+        var url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", fileName);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  }
+
   // Set the `playing` value to true 
   const play = () => {
     saveSettings();
@@ -68,10 +101,21 @@ function ActionButtons(props) {
       <Button
         variant="contained"
         color="primary"
+        onClick={exportToBulletin}
+        disabled={conf.numUrls === 0}
+      >
+        {t('export_bulletin')}
+        <SaveIcon className="leftIcon" />
+      </Button>
+
+
+      <Button
+        variant="contained"
+        color="primary"
         onClick={exportToFile}
         disabled={conf.numUrls === 0}
       >
-        {t('export')}
+        {t('export_carousel')}
         <SaveIcon className="leftIcon" />
       </Button>
 
