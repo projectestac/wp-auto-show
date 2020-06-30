@@ -1,8 +1,9 @@
 import React from "react";
-import DateMomentUtils from '@date-io/moment';
+import moment from 'moment';
+import MomentUtils from '@date-io/moment';
 import "moment/locale/ca";
 import "moment/locale/es";
-import { MuiPickersUtilsProvider, DatePicker } from 'material-ui-pickers';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 
 function Dates({ conf, setConf, selectPostsByDateAndCategory, t, i18n }) {
 
@@ -19,24 +20,20 @@ function Dates({ conf, setConf, selectPostsByDateAndCategory, t, i18n }) {
   };
 
   return (
-    <MuiPickersUtilsProvider utils={DateMomentUtils} locale={i18n.language}>
+    <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils} locale={i18n.language}>
       <div>
         <h3>{t('date_range')}</h3>
-        <DatePicker
+        <KeyboardDatePicker
           className="date"
-          keyboard
           label={t('initial_date')}
-          format="DD/MM/YYYY"
-          disableOpenOnEnter
+          format="DD/MM/yyyy"
           value={conf.dateFrom}
           onChange={handleDateChange('from')}
         />
-        <DatePicker
+        <KeyboardDatePicker
           className="date"
-          keyboard
           label={t('end_date')}
-          format="DD/MM/YYYY"
-          disableOpenOnEnter
+          format="DD/MM/yyyy"
           value={conf.dateTo}
           onChange={handleDateChange('to')}
         />
