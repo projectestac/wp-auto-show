@@ -3,6 +3,6 @@ import App from './App';
 
 test('renders EUPL link', () => {
   render(<App />);
-  const linkElement = screen.getByText(/Llicència Pública de la Unió Europea/i);
+  const linkElement = screen.getByText(/European Union Public License/i);
   expect(linkElement).toBeInTheDocument();
 });
