@@ -1,6 +1,6 @@
 {
-  "short_name": "WP Random Pages",
-  "name": "WordPress random posts and pages",
+  "short_name": "WP Show",
+  "name": "WordPress automatic viewer",
   "icons": [
     {
       "src": "ico/icon16.png",
