@@ -1,6 +1,9 @@
 # WP Show
 ### Utility for automatic, unattended viewing of WordPress sites
 
+| <span style="color:red;font-family:courier;font-size:2rem;span:30px">__WARNING: This project no longer receives updates. It was archived in 2026.__</span> |
+|----|
+
 Demo site: https://projectestac.github.io/wpshow
 
 This project displays a "carousel" of posts and pages from any WordPress site, passing pages automatically at regular intervals of time.
